@@ -25,7 +25,7 @@ export default function Navbar() {
             Technology
           </a>
           <a
-            href="#join"
+            href="#hero"
             className="ml-2 px-6 py-2 rounded-full bg-fern text-white text-sm font-semibold hover:bg-fern-dark transition-colors"
           >
             Join
@@ -55,7 +55,7 @@ export default function Navbar() {
             Technology
           </a>
           <a
-            href="#join"
+            href="#hero"
             className="mt-1 px-6 py-2 rounded-full bg-fern text-white text-sm font-semibold text-center"
             onClick={() => setMobileOpen(false)}
           >
@@ -66,3 +66,4 @@ export default function Navbar() {
     </nav>
   );
 }
+
