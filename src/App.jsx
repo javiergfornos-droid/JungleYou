@@ -1,7 +1,6 @@
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Transformations from './components/Transformations';
-import Segmentation from './components/Segmentation';
 import Footer from './components/Footer';
 
 export default function App() {
@@ -10,8 +9,8 @@ export default function App() {
       <Navbar />
       <Hero />
       <Transformations />
-      <Segmentation />
       <Footer />
     </div>
   );
 }
+
