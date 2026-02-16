@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Undo2, Pencil, Trash2, Info, ArrowLeft } from 'lucide-react';
+import ResultsDashboard from './ResultsDashboard';
 
 /* ── Geodesic area (m²) from an array of {lat,lng} ── */
 function calcArea(pts) {
@@ -46,6 +47,7 @@ export default function MapCalculator({ role, onBack }) {
   const [vertices, setVertices] = useState([]);
   const [editMode, setEditMode] = useState(false);
   const [showInfo, setShowInfo] = useState(false);
+  const [showResults, setShowResults] = useState(false);
 
   /* ── Calculator state ── */
   const [assetCategory, setAssetCategory] = useState('');
@@ -177,9 +179,13 @@ export default function MapCalculator({ role, onBack }) {
   const handleSubmit = () => {
     if (!isComplete) return;
     console.log('Submit', { ...form, assetCategory, energyBill, area, role, vertices });
-    alert('Thank you! We will send you your personal budget soon.');
-    onBack();
+    setShowResults(true);
   };
+
+  /* ── Show results dashboard after submission ── */
+  if (showResults) {
+    return <ResultsDashboard area={area} onBack={onBack} />;
+  }
 
   /* ================================================================== */
   return (
