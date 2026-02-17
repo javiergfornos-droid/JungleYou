@@ -3,6 +3,10 @@ import { Resend } from 'resend';
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export default async function handler(req, res) {
+  if (req.method === 'GET') {
+    return res.status(200).json({ ok: true, hasApiKey: !!process.env.RESEND_API_KEY, hasLeadEmail: !!process.env.LEAD_EMAIL });
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -72,22 +76,26 @@ export default async function handler(req, res) {
     </div>
   `;
 
+  const to = process.env.LEAD_EMAIL || 'javier.gonzalez@edu.escp.eu';
+  const from = process.env.RESEND_FROM || 'onboarding@resend.dev';
+
   try {
-    const { error } = await resend.emails.send({
-      from: 'onboarding@resend.dev',
-      to: 'javier.gonzalez@edu.escp.eu',
+    const { data, error } = await resend.emails.send({
+      from,
+      to,
       subject: `New Project Lead: ${name} ${surname} - ${surfaceArea}m2`,
       html,
     });
 
     if (error) {
-      console.error('Resend error:', error);
-      return res.status(500).json({ error: 'Failed to send email' });
+      console.error('Resend error:', JSON.stringify(error));
+      return res.status(500).json({ error: error.message || 'Failed to send email' });
     }
 
+    console.log('Email sent:', data?.id);
     return res.status(200).json({ success: true });
   } catch (err) {
-    console.error('Server error:', err);
+    console.error('Server error:', err.message, err.stack);
     return res.status(500).json({ error: 'Internal server error' });
   }
 }

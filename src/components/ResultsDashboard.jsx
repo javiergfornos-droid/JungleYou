@@ -18,6 +18,7 @@ const ROLE_LABELS = { pioneer: 'Pioneer', sponsor: 'Sponsor', host: 'Host' };
 
 export default function ResultsDashboard({ area, form, role, assetCategory, energyBill, onBack }) {
   const [sendStatus, setSendStatus] = useState('idle'); // idle | sending | success | error
+  const [errorMsg, setErrorMsg] = useState('');
 
   const budgetRaw = area * 180;
   const budget = budgetRaw.toLocaleString('es-ES', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
@@ -52,9 +53,11 @@ export default function ResultsDashboard({ area, form, role, assetCategory, ener
           publicAid,
         }),
       });
-      if (!res.ok) throw new Error('Send failed');
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
       setSendStatus('success');
-    } catch {
+    } catch (e) {
+      setErrorMsg(e.message);
       setSendStatus('error');
     }
   };
@@ -222,7 +225,7 @@ export default function ResultsDashboard({ area, form, role, assetCategory, ener
             </button>
             {sendStatus === 'error' && (
               <p className="text-red-400 text-sm">
-                Something went wrong. Please try again or contact us directly.
+                Something went wrong: {errorMsg || 'Unknown error'}. Please try again or contact us directly.
               </p>
             )}
           </>
